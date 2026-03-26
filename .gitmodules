@@ -1,0 +1,3 @@
+[submodule "lib/spacy-service"]
+	path = lib/spacy-service
+	url = git@github.com:scout-ac/spacy-service
