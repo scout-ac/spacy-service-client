@@ -29,6 +29,7 @@ var (
 	skipEnts      = flag.Bool("skip-ents", false, "skip ents")
 	skipSents     = flag.Bool("skip-sents", false, "skip sents")
 	skipSpans     = flag.Bool("skip-spans", false, "skip spans")
+	skipCoref     = flag.Bool("skip-coref", false, "skip coreference resolution")
 	skipSubtree   = flag.Bool("skip-subtree", false, "skip subtree")
 )
 
@@ -56,6 +57,7 @@ func main() {
 		SkipEnts:      *skipEnts,
 		SkipSents:     *skipSents,
 		SkipSpans:     *skipSpans,
+		SkipCoref:     *skipCoref,
 		Subtree:       !*skipSubtree,
 	}
 
@@ -67,11 +69,12 @@ func main() {
 	}
 
 	doc, err := protojson.Marshal(&pb.Doc{
-		Ents:      response.Ents,
-		Sents:     response.Sents,
-		Sentiment: response.Sentiment,
-		Spans:     response.Spans,
-		Tokens:    response.Tokens,
+		Ents:        response.Ents,
+		Sents:       response.Sents,
+		Sentiment:   response.Sentiment,
+		Spans:       response.Spans,
+		Tokens:      response.Tokens,
+		CorefChains: response.CorefChains,
 	})
 	if err != nil {
 		panic(err)

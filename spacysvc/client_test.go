@@ -3,6 +3,7 @@ package spacysvc_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	"scout.ac/go/spacy-service-client/spacysvc"
 	pb "scout.ac/go/spacy-service-client/spacysvc/generated"
@@ -50,4 +51,26 @@ func TestGetDoc(t *testing.T) {
 	if len(j) == 0 {
 		t.Fatal("ToJSON() returned empty output")
 	}
+}
+
+func TestGetDocCoref(t *testing.T) {
+	client, err := spacysvc.New("localhost:50051")
+	if err != nil {
+		t.Skip("service unavailable:", err)
+	}
+	defer client.Close()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	doc, err := client.GetDoc(ctx, &pb.GetDocRequest{
+		Text:      "Alice went to the store. She bought milk.",
+		Tokenize:  true,
+		SkipCoref: false,
+	})
+	if err != nil {
+		t.Fatalf("GetDoc() returned error: %v", err)
+	}
+
+	t.Logf("coref chains: %d", len(doc.GetCorefChains()))
 }

@@ -34,7 +34,8 @@ type GetDocRequest struct {
 	SkipEnts      bool                   `protobuf:"varint,9,opt,name=skip_ents,json=skipEnts,proto3" json:"skip_ents,omitempty"`
 	SkipSents     bool                   `protobuf:"varint,10,opt,name=skip_sents,json=skipSents,proto3" json:"skip_sents,omitempty"`
 	SkipSpans     bool                   `protobuf:"varint,11,opt,name=skip_spans,json=skipSpans,proto3" json:"skip_spans,omitempty"`
-	Subtree       bool                   `protobuf:"varint,12,opt,name=subtree,proto3" json:"subtree,omitempty"`
+	SkipCoref     bool                   `protobuf:"varint,12,opt,name=skip_coref,json=skipCoref,proto3" json:"skip_coref,omitempty"`
+	Subtree       bool                   `protobuf:"varint,13,opt,name=subtree,proto3" json:"subtree,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -142,6 +143,13 @@ func (x *GetDocRequest) GetSkipSents() bool {
 func (x *GetDocRequest) GetSkipSpans() bool {
 	if x != nil {
 		return x.SkipSpans
+	}
+	return false
+}
+
+func (x *GetDocRequest) GetSkipCoref() bool {
+	if x != nil {
+		return x.SkipCoref
 	}
 	return false
 }
@@ -670,49 +678,50 @@ func (x *Span) GetSentiment() float64 {
 }
 
 type Token struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	I             uint32                 `protobuf:"varint,1,opt,name=i,proto3" json:"i,omitempty"`
-	Id            uint32                 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
-	StartChar     uint32                 `protobuf:"varint,3,opt,name=start_char,json=startChar,proto3" json:"start_char,omitempty"`
-	EndChar       uint32                 `protobuf:"varint,4,opt,name=end_char,json=endChar,proto3" json:"end_char,omitempty"`
-	Tag           string                 `protobuf:"bytes,5,opt,name=tag,proto3" json:"tag,omitempty"`
-	Pos           string                 `protobuf:"bytes,6,opt,name=pos,proto3" json:"pos,omitempty"`
-	Morph         string                 `protobuf:"bytes,7,opt,name=morph,proto3" json:"morph,omitempty"`
-	Lemma         string                 `protobuf:"bytes,8,opt,name=lemma,proto3" json:"lemma,omitempty"`
-	Dep           string                 `protobuf:"bytes,9,opt,name=dep,proto3" json:"dep,omitempty"`
-	EntType       string                 `protobuf:"bytes,10,opt,name=ent_type,json=entType,proto3" json:"ent_type,omitempty"`
-	Head          uint32                 `protobuf:"varint,11,opt,name=head,proto3" json:"head,omitempty"`
-	IsAlpha       bool                   `protobuf:"varint,12,opt,name=is_alpha,json=isAlpha,proto3" json:"is_alpha,omitempty"`
-	IsAscii       bool                   `protobuf:"varint,13,opt,name=is_ascii,json=isAscii,proto3" json:"is_ascii,omitempty"`
-	IsBracket     bool                   `protobuf:"varint,14,opt,name=is_bracket,json=isBracket,proto3" json:"is_bracket,omitempty"`
-	IsCurrency    bool                   `protobuf:"varint,15,opt,name=is_currency,json=isCurrency,proto3" json:"is_currency,omitempty"`
-	IsDigit       bool                   `protobuf:"varint,16,opt,name=is_digit,json=isDigit,proto3" json:"is_digit,omitempty"`
-	IsLeftPunct   bool                   `protobuf:"varint,17,opt,name=is_left_punct,json=isLeftPunct,proto3" json:"is_left_punct,omitempty"`
-	IsLower       bool                   `protobuf:"varint,18,opt,name=is_lower,json=isLower,proto3" json:"is_lower,omitempty"`
-	IsPunct       bool                   `protobuf:"varint,19,opt,name=is_punct,json=isPunct,proto3" json:"is_punct,omitempty"`
-	IsQuote       bool                   `protobuf:"varint,20,opt,name=is_quote,json=isQuote,proto3" json:"is_quote,omitempty"`
-	IsRightPunct  bool                   `protobuf:"varint,21,opt,name=is_right_punct,json=isRightPunct,proto3" json:"is_right_punct,omitempty"`
-	IsSentEnd     bool                   `protobuf:"varint,22,opt,name=is_sent_end,json=isSentEnd,proto3" json:"is_sent_end,omitempty"`
-	IsSentStart   bool                   `protobuf:"varint,23,opt,name=is_sent_start,json=isSentStart,proto3" json:"is_sent_start,omitempty"`
-	IsSpace       bool                   `protobuf:"varint,24,opt,name=is_space,json=isSpace,proto3" json:"is_space,omitempty"`
-	IsStop        bool                   `protobuf:"varint,25,opt,name=is_stop,json=isStop,proto3" json:"is_stop,omitempty"`
-	IsTitle       bool                   `protobuf:"varint,26,opt,name=is_title,json=isTitle,proto3" json:"is_title,omitempty"`
-	IsUpper       bool                   `protobuf:"varint,27,opt,name=is_upper,json=isUpper,proto3" json:"is_upper,omitempty"`
-	LikeEmail     bool                   `protobuf:"varint,28,opt,name=like_email,json=likeEmail,proto3" json:"like_email,omitempty"`
-	LikeNum       bool                   `protobuf:"varint,29,opt,name=like_num,json=likeNum,proto3" json:"like_num,omitempty"`
-	LikeUrl       bool                   `protobuf:"varint,30,opt,name=like_url,json=likeUrl,proto3" json:"like_url,omitempty"`
-	Lang          string                 `protobuf:"bytes,31,opt,name=lang,proto3" json:"lang,omitempty"`
-	Lower         string                 `protobuf:"bytes,32,opt,name=lower,proto3" json:"lower,omitempty"`
-	Sentiment     float64                `protobuf:"fixed64,33,opt,name=sentiment,proto3" json:"sentiment,omitempty"`
-	Ancestors     *Ancestors             `protobuf:"bytes,34,opt,name=ancestors,proto3" json:"ancestors,omitempty"`
-	Children      *Children              `protobuf:"bytes,35,opt,name=children,proto3" json:"children,omitempty"`
-	Lefts         *Lefts                 `protobuf:"bytes,36,opt,name=lefts,proto3" json:"lefts,omitempty"`
-	Rights        *Rights                `protobuf:"bytes,37,opt,name=rights,proto3" json:"rights,omitempty"`
-	Conjuncts     *Conjuncts             `protobuf:"bytes,38,opt,name=conjuncts,proto3" json:"conjuncts,omitempty"`
-	Subtree       *Subtree               `protobuf:"bytes,39,opt,name=subtree,proto3" json:"subtree,omitempty"`
-	Text          string                 `protobuf:"bytes,40,opt,name=text,proto3" json:"text,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	I                 uint32                 `protobuf:"varint,1,opt,name=i,proto3" json:"i,omitempty"`
+	Id                uint32                 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+	StartChar         uint32                 `protobuf:"varint,3,opt,name=start_char,json=startChar,proto3" json:"start_char,omitempty"`
+	EndChar           uint32                 `protobuf:"varint,4,opt,name=end_char,json=endChar,proto3" json:"end_char,omitempty"`
+	Tag               string                 `protobuf:"bytes,5,opt,name=tag,proto3" json:"tag,omitempty"`
+	Pos               string                 `protobuf:"bytes,6,opt,name=pos,proto3" json:"pos,omitempty"`
+	Morph             string                 `protobuf:"bytes,7,opt,name=morph,proto3" json:"morph,omitempty"`
+	Lemma             string                 `protobuf:"bytes,8,opt,name=lemma,proto3" json:"lemma,omitempty"`
+	Dep               string                 `protobuf:"bytes,9,opt,name=dep,proto3" json:"dep,omitempty"`
+	EntType           string                 `protobuf:"bytes,10,opt,name=ent_type,json=entType,proto3" json:"ent_type,omitempty"`
+	Head              uint32                 `protobuf:"varint,11,opt,name=head,proto3" json:"head,omitempty"`
+	IsAlpha           bool                   `protobuf:"varint,12,opt,name=is_alpha,json=isAlpha,proto3" json:"is_alpha,omitempty"`
+	IsAscii           bool                   `protobuf:"varint,13,opt,name=is_ascii,json=isAscii,proto3" json:"is_ascii,omitempty"`
+	IsBracket         bool                   `protobuf:"varint,14,opt,name=is_bracket,json=isBracket,proto3" json:"is_bracket,omitempty"`
+	IsCurrency        bool                   `protobuf:"varint,15,opt,name=is_currency,json=isCurrency,proto3" json:"is_currency,omitempty"`
+	IsDigit           bool                   `protobuf:"varint,16,opt,name=is_digit,json=isDigit,proto3" json:"is_digit,omitempty"`
+	IsLeftPunct       bool                   `protobuf:"varint,17,opt,name=is_left_punct,json=isLeftPunct,proto3" json:"is_left_punct,omitempty"`
+	IsLower           bool                   `protobuf:"varint,18,opt,name=is_lower,json=isLower,proto3" json:"is_lower,omitempty"`
+	IsPunct           bool                   `protobuf:"varint,19,opt,name=is_punct,json=isPunct,proto3" json:"is_punct,omitempty"`
+	IsQuote           bool                   `protobuf:"varint,20,opt,name=is_quote,json=isQuote,proto3" json:"is_quote,omitempty"`
+	IsRightPunct      bool                   `protobuf:"varint,21,opt,name=is_right_punct,json=isRightPunct,proto3" json:"is_right_punct,omitempty"`
+	IsSentEnd         bool                   `protobuf:"varint,22,opt,name=is_sent_end,json=isSentEnd,proto3" json:"is_sent_end,omitempty"`
+	IsSentStart       bool                   `protobuf:"varint,23,opt,name=is_sent_start,json=isSentStart,proto3" json:"is_sent_start,omitempty"`
+	IsSpace           bool                   `protobuf:"varint,24,opt,name=is_space,json=isSpace,proto3" json:"is_space,omitempty"`
+	IsStop            bool                   `protobuf:"varint,25,opt,name=is_stop,json=isStop,proto3" json:"is_stop,omitempty"`
+	IsTitle           bool                   `protobuf:"varint,26,opt,name=is_title,json=isTitle,proto3" json:"is_title,omitempty"`
+	IsUpper           bool                   `protobuf:"varint,27,opt,name=is_upper,json=isUpper,proto3" json:"is_upper,omitempty"`
+	LikeEmail         bool                   `protobuf:"varint,28,opt,name=like_email,json=likeEmail,proto3" json:"like_email,omitempty"`
+	LikeNum           bool                   `protobuf:"varint,29,opt,name=like_num,json=likeNum,proto3" json:"like_num,omitempty"`
+	LikeUrl           bool                   `protobuf:"varint,30,opt,name=like_url,json=likeUrl,proto3" json:"like_url,omitempty"`
+	Lang              string                 `protobuf:"bytes,31,opt,name=lang,proto3" json:"lang,omitempty"`
+	Lower             string                 `protobuf:"bytes,32,opt,name=lower,proto3" json:"lower,omitempty"`
+	Sentiment         float64                `protobuf:"fixed64,33,opt,name=sentiment,proto3" json:"sentiment,omitempty"`
+	Ancestors         *Ancestors             `protobuf:"bytes,34,opt,name=ancestors,proto3" json:"ancestors,omitempty"`
+	Children          *Children              `protobuf:"bytes,35,opt,name=children,proto3" json:"children,omitempty"`
+	Lefts             *Lefts                 `protobuf:"bytes,36,opt,name=lefts,proto3" json:"lefts,omitempty"`
+	Rights            *Rights                `protobuf:"bytes,37,opt,name=rights,proto3" json:"rights,omitempty"`
+	Conjuncts         *Conjuncts             `protobuf:"bytes,38,opt,name=conjuncts,proto3" json:"conjuncts,omitempty"`
+	Subtree           *Subtree               `protobuf:"bytes,39,opt,name=subtree,proto3" json:"subtree,omitempty"`
+	Text              string                 `protobuf:"bytes,40,opt,name=text,proto3" json:"text,omitempty"`
+	CorefChainIndexes []uint32               `protobuf:"varint,41,rep,packed,name=coref_chain_indexes,json=corefChainIndexes,proto3" json:"coref_chain_indexes,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *Token) Reset() {
@@ -1025,6 +1034,125 @@ func (x *Token) GetText() string {
 	return ""
 }
 
+func (x *Token) GetCorefChainIndexes() []uint32 {
+	if x != nil {
+		return x.CorefChainIndexes
+	}
+	return nil
+}
+
+type CorefMention struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TokenIndexes  []uint32               `protobuf:"varint,1,rep,packed,name=token_indexes,json=tokenIndexes,proto3" json:"token_indexes,omitempty"`
+	RootIndex     uint32                 `protobuf:"varint,2,opt,name=root_index,json=rootIndex,proto3" json:"root_index,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CorefMention) Reset() {
+	*x = CorefMention{}
+	mi := &file_spacy_service_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CorefMention) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CorefMention) ProtoMessage() {}
+
+func (x *CorefMention) ProtoReflect() protoreflect.Message {
+	mi := &file_spacy_service_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CorefMention.ProtoReflect.Descriptor instead.
+func (*CorefMention) Descriptor() ([]byte, []int) {
+	return file_spacy_service_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *CorefMention) GetTokenIndexes() []uint32 {
+	if x != nil {
+		return x.TokenIndexes
+	}
+	return nil
+}
+
+func (x *CorefMention) GetRootIndex() uint32 {
+	if x != nil {
+		return x.RootIndex
+	}
+	return 0
+}
+
+type CorefChain struct {
+	state                    protoimpl.MessageState `protogen:"open.v1"`
+	Index                    uint32                 `protobuf:"varint,1,opt,name=index,proto3" json:"index,omitempty"`
+	Mentions                 []*CorefMention        `protobuf:"bytes,2,rep,name=mentions,proto3" json:"mentions,omitempty"`
+	MostSpecificMentionIndex uint32                 `protobuf:"varint,3,opt,name=most_specific_mention_index,json=mostSpecificMentionIndex,proto3" json:"most_specific_mention_index,omitempty"`
+	unknownFields            protoimpl.UnknownFields
+	sizeCache                protoimpl.SizeCache
+}
+
+func (x *CorefChain) Reset() {
+	*x = CorefChain{}
+	mi := &file_spacy_service_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CorefChain) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CorefChain) ProtoMessage() {}
+
+func (x *CorefChain) ProtoReflect() protoreflect.Message {
+	mi := &file_spacy_service_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CorefChain.ProtoReflect.Descriptor instead.
+func (*CorefChain) Descriptor() ([]byte, []int) {
+	return file_spacy_service_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *CorefChain) GetIndex() uint32 {
+	if x != nil {
+		return x.Index
+	}
+	return 0
+}
+
+func (x *CorefChain) GetMentions() []*CorefMention {
+	if x != nil {
+		return x.Mentions
+	}
+	return nil
+}
+
+func (x *CorefChain) GetMostSpecificMentionIndex() uint32 {
+	if x != nil {
+		return x.MostSpecificMentionIndex
+	}
+	return 0
+}
+
 type Doc struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Text          string                 `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
@@ -1033,13 +1161,14 @@ type Doc struct {
 	Spans         []*Span                `protobuf:"bytes,4,rep,name=spans,proto3" json:"spans,omitempty"`
 	Tokens        []*Token               `protobuf:"bytes,5,rep,name=tokens,proto3" json:"tokens,omitempty"`
 	Sentiment     float64                `protobuf:"fixed64,6,opt,name=sentiment,proto3" json:"sentiment,omitempty"`
+	CorefChains   []*CorefChain          `protobuf:"bytes,7,rep,name=coref_chains,json=corefChains,proto3" json:"coref_chains,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Doc) Reset() {
 	*x = Doc{}
-	mi := &file_spacy_service_proto_msgTypes[11]
+	mi := &file_spacy_service_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1051,7 +1180,7 @@ func (x *Doc) String() string {
 func (*Doc) ProtoMessage() {}
 
 func (x *Doc) ProtoReflect() protoreflect.Message {
-	mi := &file_spacy_service_proto_msgTypes[11]
+	mi := &file_spacy_service_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1064,7 +1193,7 @@ func (x *Doc) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Doc.ProtoReflect.Descriptor instead.
 func (*Doc) Descriptor() ([]byte, []int) {
-	return file_spacy_service_proto_rawDescGZIP(), []int{11}
+	return file_spacy_service_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *Doc) GetText() string {
@@ -1109,11 +1238,18 @@ func (x *Doc) GetSentiment() float64 {
 	return 0
 }
 
+func (x *Doc) GetCorefChains() []*CorefChain {
+	if x != nil {
+		return x.CorefChains
+	}
+	return nil
+}
+
 var File_spacy_service_proto protoreflect.FileDescriptor
 
 const file_spacy_service_proto_rawDesc = "" +
 	"\n" +
-	"\x13spacy_service.proto\x12\rspacy_service\"\xe1\x02\n" +
+	"\x13spacy_service.proto\x12\rspacy_service\"\x80\x03\n" +
 	"\rGetDocRequest\x12\x12\n" +
 	"\x04text\x18\x01 \x01(\tR\x04text\x12\x1a\n" +
 	"\btokenize\x18\x02 \x01(\bR\btokenize\x12\x1c\n" +
@@ -1128,8 +1264,10 @@ const file_spacy_service_proto_rawDesc = "" +
 	"skip_sents\x18\n" +
 	" \x01(\bR\tskipSents\x12\x1d\n" +
 	"\n" +
-	"skip_spans\x18\v \x01(\bR\tskipSpans\x12\x18\n" +
-	"\asubtree\x18\f \x01(\bR\asubtree\"\x19\n" +
+	"skip_spans\x18\v \x01(\bR\tskipSpans\x12\x1d\n" +
+	"\n" +
+	"skip_coref\x18\f \x01(\bR\tskipCoref\x12\x18\n" +
+	"\asubtree\x18\r \x01(\bR\asubtree\"\x19\n" +
 	"\tAncestors\x12\f\n" +
 	"\x01i\x18\x01 \x03(\rR\x01i\"\x18\n" +
 	"\bChildren\x12\f\n" +
@@ -1165,7 +1303,7 @@ const file_spacy_service_proto_rawDesc = "" +
 	"start_char\x18\x02 \x01(\rR\tstartChar\x12\x10\n" +
 	"\x03end\x18\x03 \x01(\rR\x03end\x12\x19\n" +
 	"\bend_char\x18\x04 \x01(\rR\aendChar\x12\x1c\n" +
-	"\tsentiment\x18\x05 \x01(\x01R\tsentiment\"\xad\t\n" +
+	"\tsentiment\x18\x05 \x01(\x01R\tsentiment\"\xdd\t\n" +
 	"\x05Token\x12\f\n" +
 	"\x01i\x18\x01 \x01(\rR\x01i\x12\x0e\n" +
 	"\x02id\x18\x02 \x01(\rR\x02id\x12\x1d\n" +
@@ -1211,14 +1349,25 @@ const file_spacy_service_proto_rawDesc = "" +
 	"\x06rights\x18% \x01(\v2\x15.spacy_service.RightsR\x06rights\x126\n" +
 	"\tconjuncts\x18& \x01(\v2\x18.spacy_service.ConjunctsR\tconjuncts\x120\n" +
 	"\asubtree\x18' \x01(\v2\x16.spacy_service.SubtreeR\asubtree\x12\x12\n" +
-	"\x04text\x18( \x01(\tR\x04text\"\xe3\x01\n" +
+	"\x04text\x18( \x01(\tR\x04text\x12.\n" +
+	"\x13coref_chain_indexes\x18) \x03(\rR\x11corefChainIndexes\"R\n" +
+	"\fCorefMention\x12#\n" +
+	"\rtoken_indexes\x18\x01 \x03(\rR\ftokenIndexes\x12\x1d\n" +
+	"\n" +
+	"root_index\x18\x02 \x01(\rR\trootIndex\"\x9a\x01\n" +
+	"\n" +
+	"CorefChain\x12\x14\n" +
+	"\x05index\x18\x01 \x01(\rR\x05index\x127\n" +
+	"\bmentions\x18\x02 \x03(\v2\x1b.spacy_service.CorefMentionR\bmentions\x12=\n" +
+	"\x1bmost_specific_mention_index\x18\x03 \x01(\rR\x18mostSpecificMentionIndex\"\xa1\x02\n" +
 	"\x03Doc\x12\x12\n" +
 	"\x04text\x18\x01 \x01(\tR\x04text\x12&\n" +
 	"\x04ents\x18\x02 \x03(\v2\x12.spacy_service.EntR\x04ents\x12)\n" +
 	"\x05sents\x18\x03 \x03(\v2\x13.spacy_service.SentR\x05sents\x12)\n" +
 	"\x05spans\x18\x04 \x03(\v2\x13.spacy_service.SpanR\x05spans\x12,\n" +
 	"\x06tokens\x18\x05 \x03(\v2\x14.spacy_service.TokenR\x06tokens\x12\x1c\n" +
-	"\tsentiment\x18\x06 \x01(\x01R\tsentiment2J\n" +
+	"\tsentiment\x18\x06 \x01(\x01R\tsentiment\x12<\n" +
+	"\fcoref_chains\x18\a \x03(\v2\x19.spacy_service.CorefChainR\vcorefChains2J\n" +
 	"\fSpacyService\x12:\n" +
 	"\x06GetDoc\x12\x1c.spacy_service.GetDocRequest\x1a\x12.spacy_service.DocB\x18Z\x16scout.ac/spacy-serviceb\x06proto3"
 
@@ -1234,7 +1383,7 @@ func file_spacy_service_proto_rawDescGZIP() []byte {
 	return file_spacy_service_proto_rawDescData
 }
 
-var file_spacy_service_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_spacy_service_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_spacy_service_proto_goTypes = []any{
 	(*GetDocRequest)(nil), // 0: spacy_service.GetDocRequest
 	(*Ancestors)(nil),     // 1: spacy_service.Ancestors
@@ -1247,7 +1396,9 @@ var file_spacy_service_proto_goTypes = []any{
 	(*Sent)(nil),          // 8: spacy_service.Sent
 	(*Span)(nil),          // 9: spacy_service.Span
 	(*Token)(nil),         // 10: spacy_service.Token
-	(*Doc)(nil),           // 11: spacy_service.Doc
+	(*CorefMention)(nil),  // 11: spacy_service.CorefMention
+	(*CorefChain)(nil),    // 12: spacy_service.CorefChain
+	(*Doc)(nil),           // 13: spacy_service.Doc
 }
 var file_spacy_service_proto_depIdxs = []int32{
 	7,  // 0: spacy_service.Sent.ents:type_name -> spacy_service.Ent
@@ -1257,17 +1408,19 @@ var file_spacy_service_proto_depIdxs = []int32{
 	5,  // 4: spacy_service.Token.rights:type_name -> spacy_service.Rights
 	3,  // 5: spacy_service.Token.conjuncts:type_name -> spacy_service.Conjuncts
 	6,  // 6: spacy_service.Token.subtree:type_name -> spacy_service.Subtree
-	7,  // 7: spacy_service.Doc.ents:type_name -> spacy_service.Ent
-	8,  // 8: spacy_service.Doc.sents:type_name -> spacy_service.Sent
-	9,  // 9: spacy_service.Doc.spans:type_name -> spacy_service.Span
-	10, // 10: spacy_service.Doc.tokens:type_name -> spacy_service.Token
-	0,  // 11: spacy_service.SpacyService.GetDoc:input_type -> spacy_service.GetDocRequest
-	11, // 12: spacy_service.SpacyService.GetDoc:output_type -> spacy_service.Doc
-	12, // [12:13] is the sub-list for method output_type
-	11, // [11:12] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	11, // 7: spacy_service.CorefChain.mentions:type_name -> spacy_service.CorefMention
+	7,  // 8: spacy_service.Doc.ents:type_name -> spacy_service.Ent
+	8,  // 9: spacy_service.Doc.sents:type_name -> spacy_service.Sent
+	9,  // 10: spacy_service.Doc.spans:type_name -> spacy_service.Span
+	10, // 11: spacy_service.Doc.tokens:type_name -> spacy_service.Token
+	12, // 12: spacy_service.Doc.coref_chains:type_name -> spacy_service.CorefChain
+	0,  // 13: spacy_service.SpacyService.GetDoc:input_type -> spacy_service.GetDocRequest
+	13, // 14: spacy_service.SpacyService.GetDoc:output_type -> spacy_service.Doc
+	14, // [14:15] is the sub-list for method output_type
+	13, // [13:14] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_spacy_service_proto_init() }
@@ -1281,7 +1434,7 @@ func file_spacy_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_spacy_service_proto_rawDesc), len(file_spacy_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
